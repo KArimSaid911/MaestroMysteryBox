@@ -13,8 +13,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: url('background.jpg') no-repeat center center fixed;
-    background-size: cover;
+    background: linear-gradient(135deg, #4a0072, #6a0dad, #8a2be2);
     min-height: 100vh;
     display: flex;
     align-items: center;
