@@ -4,10 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingSpinner = document.querySelector('.loading-spinner');
     const confettiContainer = document.querySelector('.confetti-container');
 
-    // Get prize from URL parameters
+    // Get prize from URL parameter
     const urlParams = new URLSearchParams(window.location.search);
-    const prize = urlParams.get('prize');
-    const token = urlParams.get('t');
+    const encodedPrize = urlParams.get('p');
+    let prize = "No prize found";
+    
+    if (encodedPrize) {
+        try {
+            // Simple URL decoding
+            prize = encodedPrize.replace(/_/g, ' ');
+        } catch (e) {
+            console.error('Error decoding prize:', e);
+        }
+    }
 
     // Create confetti
     function createConfetti() {
@@ -32,11 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mysteryBox.classList.add('open');
         
         setTimeout(() => {
-            if (prize) {
-                prizeDisplay.textContent = decodeURIComponent(prize);
-            } else {
-                prizeDisplay.textContent = "No prize found";
-            }
+            prizeDisplay.textContent = prize;
             createConfetti();
             
             // Create new confetti every few seconds

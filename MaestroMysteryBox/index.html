@@ -13,11 +13,8 @@
             <div class="box-lid"></div>
             <div class="box-bottom"></div>
             <div class="prize-content">
-                <h1>🎉 Congratulations! 🎉</h1>
-                <div class="prize-text">
-                    <p>You've won:</p>
-                    <h2 id="prize-display">Loading your prize...</h2>
-                </div>
+                <h2>Congratulations!</h2>
+                <p id="prize-display">Checking your prize...</p>
                 <div class="confetti-container"></div>
             </div>
         </div>
@@ -26,6 +23,27 @@
             <p>Opening your Mystery Box...</p>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let prize = getQueryParameter("p");
+            let prizeDisplay = document.getElementById("prize-display");
+
+            console.log("Extracted Prize:", prize);  // Debugging log
+
+            if (prize && prizeDisplay) {
+                prizeDisplay.innerHTML = `<strong>${decodeURIComponent(prize)}</strong>`;
+                console.log("Prize displayed successfully.");
+            } else {
+                console.error("Prize display element not found or prize is empty.");
+                prizeDisplay.innerHTML = `<span style="color: red; font-weight: bold;">No prize found</span>`;
+            }
+        });
+    </script>
 </body>
 </html> 
