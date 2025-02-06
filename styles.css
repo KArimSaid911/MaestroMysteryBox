@@ -13,10 +13,8 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-image: url('assets/background.png.jpg');
+    background: url('https://raw.githubusercontent.com/KArimSaid911/MaestroMysteryBox/refs/heads/main/background.png.jpg') no-repeat center center fixed;
     background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
