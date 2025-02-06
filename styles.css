@@ -37,6 +37,7 @@ body {
     perspective: 1000px;
     background-color: var(--primary-color);
     border: 3px solid var(--accent-color);
+    transition: opacity 0.5s ease-in-out;
 }
 
 .box-lid, .box-bottom {
@@ -78,6 +79,7 @@ body {
     transition: all 0.5s ease;
     background-color: #7b1fa2;
     color: var(--text-color);
+    z-index: 3;
 }
 
 .mystery-box.open .prize-content {
@@ -110,21 +112,28 @@ h2 {
 
 .loading-spinner {
     margin-top: 2rem;
-}
-
-.spinner {
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-top: 5px solid #9b59b6; /* Purple Loader */
+    border-radius: 50%;
     width: 50px;
     height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid var(--accent-color);
-    border-radius: 50%;
-    margin: 0 auto 1rem;
     animation: spin 1s linear infinite;
+    margin: auto;
+    display: block;
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Hide elements when the mystery box opens */
+.mystery-box.open .loading-spinner {
+    display: none;
+}
+
+.mystery-box.open .prize-box {
+    opacity: 1;
 }
 
 /* Confetti Animation */
@@ -189,10 +198,17 @@ h2 {
     background-color: #9c27b0;
     color: var(--text-color);
     font-size: 20px;
-    padding: 10px;
+    padding: 15px 20px;
     border-radius: 8px;
     text-align: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    margin-top: 15px;
+    max-width: 90%;
+    word-wrap: break-word;
+}
+
+.mystery-box.open #prize-display {
+    opacity: 1;
 }
 
 /* Responsive Design */

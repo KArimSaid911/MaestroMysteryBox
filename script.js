@@ -1,55 +1,35 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const mysteryBox = document.querySelector('.mystery-box');
+document.addEventListener('DOMContentLoaded', () => {
     const prizeDisplay = document.getElementById('prize-display');
-    const loadingText = document.getElementById('loading-text');
-    const loadingBar = document.getElementById('loading-bar');
-    const confettiContainer = document.querySelector('.confetti-container');
+    const loadingSpinner = document.querySelector('.loading-spinner');
+    const mysteryBox = document.querySelector('.mystery-box');
+    const rollingText = document.createElement("p");
 
     // Get prize from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     let prize = urlParams.get('prize');
 
-    // Rolling Dice Messages
-    const rollingMessages = ["🎲 Rolling the dice...", "🎰 Spinning...", "🎁 Choosing your prize..."];
-    
-    let messageIndex = 0;
+    console.log("Prize fetched from URL:", prize); // Debugging
 
-    // Change dice rolling text every 1 second
-    const diceRollInterval = setInterval(() => {
-        loadingText.innerText = rollingMessages[messageIndex % rollingMessages.length];
-        messageIndex++;
-    }, 1000);
+    // Show rolling effect
+    rollingText.innerHTML = "🎲 Rolling the dice...";
+    rollingText.style.color = "#ffffff"; 
+    rollingText.style.fontSize = "18px"; 
+    rollingText.style.fontWeight = "bold";
+    rollingText.style.textAlign = "center";
+    document.body.appendChild(rollingText);
 
-    // Simulate Loading and Reveal Prize
+    // Simulate a rolling effect before revealing the prize
     setTimeout(() => {
-        clearInterval(diceRollInterval); // Stop changing text
-        loadingText.style.display = 'none'; // Hide rolling text
-        loadingBar.style.display = 'none';  // Hide loading bar
+        rollingText.remove(); // Remove rolling text
+        loadingSpinner.style.display = 'none'; // Hide loading animation
+        mysteryBox.classList.add('open'); // Show the box opening effect
 
-        setTimeout(() => {
-            if (prize) {
-                prizeDisplay.innerHTML = `<strong>${decodeURIComponent(prize)}</strong>`;
-                prizeDisplay.style.opacity = "1"; // Show prize
-            } else {
-                prizeDisplay.innerHTML = `<span style="color: red; font-weight: bold;">No prize found</span>`;
-            }
-            createConfetti(); // Show confetti
-        }, 1000);
-    }, 2500); // Wait for 2.5 seconds before revealing prize
-
-    // Confetti Effect
-    function createConfetti() {
-        for (let i = 0; i < 50; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = Math.random() * 100 + '%';
-            confetti.style.animationDelay = Math.random() * 3 + 's';
-            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 80%, 50%)`;
-            confettiContainer.appendChild(confetti);
-
-            confetti.addEventListener('animationend', () => {
-                confetti.remove();
-            });
+        if (prize) {
+            prizeDisplay.innerHTML = `<strong>${decodeURIComponent(prize)}</strong>`;
+            console.log("Prize displayed successfully.");
+        } else {
+            prizeDisplay.innerHTML = `<span style="color: red; font-weight: bold;">No prize found</span>`;
+            console.error("No prize found in URL parameters.");
         }
-    }
+    }, 3000); // Wait 3 seconds before revealing prize
 }); 
