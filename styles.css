@@ -1,8 +1,8 @@
 :root {
-    --primary-color: #2c3e50;
-    --accent-color: #e74c3c;
-    --text-color: #ecf0f1;
-    --box-color: #3498db;
+    --primary-color: #6a0dad;    /* Deep Purple */
+    --accent-color: #8a2be2;     /* Bright Purple */
+    --text-color: #ffffff;       /* White */
+    --box-color: #7b1fa2;        /* Medium Purple */
 }
 
 * {
@@ -35,6 +35,8 @@ body {
     height: 300px;
     margin: 0 auto 2rem;
     perspective: 1000px;
+    background-color: var(--primary-color);
+    border: 3px solid var(--accent-color);
 }
 
 .box-lid, .box-bottom {
@@ -74,6 +76,8 @@ body {
     opacity: 0;
     transform: scale(0.8);
     transition: all 0.5s ease;
+    background-color: #7b1fa2;
+    color: var(--text-color);
 }
 
 .mystery-box.open .prize-content {
@@ -83,17 +87,19 @@ body {
 }
 
 .prize-text {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 2rem;
-    border-radius: 15px;
+    background-color: #4a0072;
+    padding: 15px;
+    border-radius: 10px;
     margin-top: 1rem;
+    color: var(--text-color);
 }
 
 h1 {
     font-size: 2rem;
     margin-bottom: 1rem;
-    color: #f1c40f;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    color: #e1baff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    font-weight: bold;
 }
 
 h2 {
@@ -180,6 +186,13 @@ h2 {
 #prize-display {
     opacity: 0;
     transition: opacity 1s ease-in-out;
+    background-color: #9c27b0;
+    color: var(--text-color);
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Responsive Design */
