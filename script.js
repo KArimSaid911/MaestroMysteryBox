@@ -1,52 +1,43 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
     const mysteryBox = document.querySelector('.mystery-box');
     const prizeDisplay = document.getElementById('prize-display');
-    const loadingSpinner = document.querySelector('.loading-spinner');
+    const loadingText = document.getElementById('loading-text');
+    const loadingBar = document.getElementById('loading-bar');
     const confettiContainer = document.querySelector('.confetti-container');
 
-    // Get prize and token from URL parameters
+    // Get prize from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     let prize = urlParams.get('prize');
-    let token = urlParams.get('t');
 
-    console.log("Extracted Prize:", prize);
-    console.log("Extracted Token:", token);
+    // Rolling Dice Messages
+    const rollingMessages = ["🎲 Rolling the dice...", "🎰 Spinning...", "🎁 Choosing your prize..."];
+    
+    let messageIndex = 0;
 
-    // Retrieve stored token from local storage
-    const storedToken = localStorage.getItem('claimed_prize_token');
+    // Change dice rolling text every 1 second
+    const diceRollInterval = setInterval(() => {
+        loadingText.innerText = rollingMessages[messageIndex % rollingMessages.length];
+        messageIndex++;
+    }, 1000);
 
-    // 🚨 If user already claimed a prize, show "No double dipping" message 🚨
-    if (storedToken === token) {
-        loadingSpinner.style.display = 'none';
-        prizeDisplay.innerHTML = `<span style="color: red; font-weight: bold;">❌ Oops, frens! You already hit the jackpot once, no double dipping! 🎰</span>`;
-        console.error("User already claimed the prize!");
-        return;
-    }
-
-    // Simulate loading and reveal prize
+    // Simulate Loading and Reveal Prize
     setTimeout(() => {
-        loadingSpinner.style.display = 'none';
-        mysteryBox.classList.add('open');
+        clearInterval(diceRollInterval); // Stop changing text
+        loadingText.style.display = 'none'; // Hide rolling text
+        loadingBar.style.display = 'none';  // Hide loading bar
 
         setTimeout(() => {
             if (prize) {
                 prizeDisplay.innerHTML = `<strong>${decodeURIComponent(prize)}</strong>`;
-                console.log("Prize displayed successfully.");
-
-                // ✅ Store the token in localStorage to prevent multiple claims
-                localStorage.setItem('claimed_prize_token', token);
+                prizeDisplay.style.opacity = "1"; // Show prize
             } else {
                 prizeDisplay.innerHTML = `<span style="color: red; font-weight: bold;">No prize found</span>`;
-                console.error("No prize found in URL parameters.");
             }
-            createConfetti();
+            createConfetti(); // Show confetti
+        }, 1000);
+    }, 2500); // Wait for 2.5 seconds before revealing prize
 
-            // Create new confetti every few seconds
-            setInterval(createConfetti, 3000);
-        }, 1500);
-    }, 2000);
-
-    // Confetti effect
+    // Confetti Effect
     function createConfetti() {
         for (let i = 0; i < 50; i++) {
             const confetti = document.createElement('div');
@@ -56,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
             confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 80%, 50%)`;
             confettiContainer.appendChild(confetti);
 
-            // Remove confetti after animation
             confetti.addEventListener('animationend', () => {
                 confetti.remove();
             });
