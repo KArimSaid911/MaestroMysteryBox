@@ -1,55 +1,129 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
-    console.log("Token:", token);
+document.addEventListener('DOMContentLoaded', async function() {
+    const loadingDiv = document.getElementById('loading');
+    const resultDiv = document.getElementById('result');
+    const progressBar = document.querySelector('.progress-bar');
+    const finalClaimBtn = document.getElementById('finalClaimBtn');
+    const prizeMessage = document.getElementById('prizeMessage');
 
-    const prize = urlParams.get("prize");
-    console.log("Prize:", prize);
-
-    const prizeDisplay = document.getElementById('prize-display');
-    const loadingSpinner = document.querySelector('.loading-spinner');
-    const mysteryBox = document.querySelector('.mystery-box');
-    const rollingText = document.createElement("p");
-
-    if (!token) {
-        alert("No token provided!");
+    if (!loadingDiv || !resultDiv || !progressBar || !finalClaimBtn || !prizeMessage) {
+        console.error("Some elements are missing from the HTML.");
         return;
     }
 
-    // Get used tokens from localStorage
-    let usedTokens = JSON.parse(localStorage.getItem("usedTokens")) || [];
+    // List of possible prizes
+    function getRandomPrize() {
+        const prizes = [
+            "1 Maestro premium account for 1 month",
+            "2 Maestro premium accounts for 1 week",
+            "3 Maestro premium accounts for 1 week",
+            "4 Maestro premium accounts for 1 week",
+            "5 Maestro premium accounts for 1 week",
+            "6 Maestro premium accounts for 1 week",
+            "7 Maestro premium accounts for 3 days",
+            "8 Maestro premium accounts for 3 days",
+            "9 Maestro premium accounts for 1 day",
+            "10 Maestro premium accounts for 1 day"
+        ];
+        
+        return prizes[Math.floor(Math.random() * prizes.length)];
+    }
 
-    if (usedTokens.includes(token)) {
-        // Token already used, show "already-clicked" div and hide "winner"
-        document.getElementById("winner").style.display = "none";
-        document.getElementById("already-clicked").style.display = "block";
-        document.getElementById("already-clicked").textContent = "Oops, frens! You already hit the jackpot once, no double dipping! ";
-    } else {
-        // Store token in localStorage
-        usedTokens.push(token);
-        localStorage.setItem("usedTokens", JSON.stringify(usedTokens));
+    async function animateLoading() {
+        const messages = document.querySelectorAll('.loading-text');
+        let progress = 0;
+        const progressIncrement = 100 / (messages.length + 1);
 
-        // Show rolling effect
-        rollingText.innerHTML = "🎲 Rolling the dice...";
-        rollingText.style.color = "#ffffff"; 
-        rollingText.style.fontSize = "18px"; 
-        rollingText.style.fontWeight = "bold";
-        rollingText.style.textAlign = "center";
-        document.body.appendChild(rollingText);
+        for (let i = 0; i < messages.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            messages[i].style.opacity = '1';
+            messages[i].style.transform = 'translateY(0)';
+            progress += progressIncrement;
+            progressBar.style.width = `${progress}%`;
+        }
 
-        // Simulate a rolling effect before revealing the prize
-        setTimeout(() => {
-            rollingText.remove(); // Remove rolling text
-            loadingSpinner.style.display = 'none'; // Hide loading animation
-            mysteryBox.classList.add('open'); // Show the box opening effect
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        progress = 100;
+        progressBar.style.width = `${progress}%`;
+    }
 
-            if (prize) {
-                prizeDisplay.innerHTML = `<strong>${decodeURIComponent(prize)}</strong>`;
-                console.log("Prize displayed successfully.");
-            } else {
-                prizeDisplay.innerHTML = `<span style="color: red; font-weight: bold;">No prize found</span>`;
-                console.error("No prize found in URL parameters.");
-            }
-        }, 3000); // Wait 3 seconds before revealing prize
+    // Start loading automatically when the page loads
+    loadingDiv.style.display = 'block';
+
+    await animateLoading();
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    loadingDiv.style.display = 'none';
+    resultDiv.style.display = 'block';
+    resultDiv.style.opacity = '1';
+    resultDiv.style.transform = 'translateY(0)';
+
+    // Set the prize message dynamically
+    const randomPrize = getRandomPrize();
+    prizeMessage.innerHTML = `Congratulations! You won ${randomPrize}!`;
+
+    finalClaimBtn.style.display = 'inline-block';
+
+    finalClaimBtn.addEventListener('click', () => {
+        window.open('https://t.me/CrypticKimo', '_blank');
+    });
+
+});
+
+
+// Function to claim a token when a user clicks the mystery box
+// Function to get token from the URL
+// Function to extract token from URL parameters
+function getTokenFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    if (!token) {
+        alert("❌ No token provided! Please use a valid link.");
+        return null;
+    }
+    return token;
+}
+
+// Function to check if token is already claimed
+async function checkToken(token) {
+    try {
+        const response = await fetch(`https://maestro-mysterybox-backend.onrender.com/check_token?token=${token}`);
+        const data = await response.json();
+
+        if (data.alreadyClaimed) {
+            alert(`🎁 You already won: ${data.prize}`);
+        } else {
+            claimToken(token);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+// Function to claim the token
+async function claimToken(token) {
+    try {
+        const response = await fetch("https://maestro-mysterybox-backend.onrender.com/claim_token", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: token })
+        });
+
+        const data = await response.json();
+        if (data.status === "success") {
+            alert(`🎉 Congratulations! You won: ${data.prize}`);
+        } else {
+            alert(`❌ ${data.error}`);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+// Main execution: Get token and check it
+document.addEventListener("DOMContentLoaded", () => {
+    const token = getTokenFromURL();
+    if (token) {
+        checkToken(token);
     }
 });
