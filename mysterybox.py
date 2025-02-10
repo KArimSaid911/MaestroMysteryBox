@@ -84,7 +84,7 @@ async def send_mmb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             prize = random.choice(available_prizes)
             available_prizes.remove(prize)
             token = generate_url_token()
-            link = f"https://maestromysterybox.netlify.app?t={token}"
+            link = f" https://karimsaid911.github.io/MaestroMysteryBox/t={token}"
             message = """🎁 New Mystery Box Available!
 
 🎯 Click to Open Mystery Box:
@@ -182,7 +182,7 @@ async def send_prize_link(context: ContextTypes.DEFAULT_TYPE):
                 prize = random.choice(available_prizes)
                 available_prizes.remove(prize)
                 token = generate_url_token()
-                link = f"https://byrouti.github.io/MaestroMysterybox/prize.html?prize={prize.replace(' ', '%20')}&token={token}"
+                link = f" https://karimsaid911.github.io/MaestroMysteryBox/prize.html?prize={prize.replace(' ', '%20')}&token={token}"
                 message = f"<a href='{link}'>MeastroMysterybox</a>"
                 
                 try:
