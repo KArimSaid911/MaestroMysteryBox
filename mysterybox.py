@@ -46,6 +46,7 @@ PRIZES = [
 winners = {}  # Store winner IDs and their prizes with dates
 available_prizes = []  # List of prizes still available today
 users_clicked = set()  # Track users who clicked the link
+user_prizes = {}  # Store user_id: {"prize": prize, "token": token, "claimed": False}
 
 async def check_admin(update: Update) -> bool:
     """Check if the user is admin."""
@@ -84,11 +85,18 @@ async def send_mmb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             prize = random.choice(available_prizes)
             available_prizes.remove(prize)
             token = generate_url_token()
-            link = f" https://karimsaid911.github.io/MaestroMysteryBox/t={token}"
+            link = f"https://karimsaid911.github.io/MaestroMysteryBox/#t={token}"
             message = """🎁 New Mystery Box Available!
 
 🎯 Click to Open Mystery Box:
 {link}""".format(link=link)
+            
+            # Store the token and prize for later verification
+            user_prizes[token] = {
+                "prize": prize,
+                "claimed": False,
+                "user_id": None
+            }
             
             await context.bot.send_message(
                 chat_id=GROUP_ID,
@@ -131,6 +139,7 @@ async def reset_mmb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         winners.clear()
         available_prizes.clear()
         users_clicked.clear()
+        user_prizes.clear()  # Clear user prizes dictionary
         available_prizes.extend(PRIZES)
         random.shuffle(available_prizes)
         await update.message.reply_text("✅ All winners and clicks have been reset!")
@@ -148,6 +157,7 @@ async def restart_mmb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         winners.clear()
         available_prizes.clear()
         users_clicked.clear()
+        user_prizes.clear()  # Clear user prizes dictionary
         available_prizes.extend(PRIZES)
         random.shuffle(available_prizes)
         
@@ -182,7 +192,21 @@ async def send_prize_link(context: ContextTypes.DEFAULT_TYPE):
                 prize = random.choice(available_prizes)
                 available_prizes.remove(prize)
                 token = generate_url_token()
-                link = f" https://karimsaid911.github.io/MaestroMysteryBox/prize.html?prize={prize.replace(' ', '%20')}&token={token}"
+                
+                # Check if user has already claimed a prize
+                user_id = context.user_data.get('user_id')
+                if user_id in user_prizes and user_prizes[user_id].get('claimed', False):
+                    link = f"https://karimsaid911.github.io/MaestroMysteryBox/#error=already-claimed"
+                else:
+                    link = f"https://karimsaid911.github.io/MaestroMysteryBox/#prize={prize.replace(' ', '%20')}&token={token}"
+                    if user_id:
+                        user_prizes[user_id] = {
+                            "prize": prize,
+                            "token": token,
+                            "claimed": True,
+                            "date": current_time.strftime("%Y-%m-%d %H:%M:%S")
+                        }
+
                 message = f"<a href='{link}'>MeastroMysterybox</a>"
                 
                 try:
@@ -203,6 +227,7 @@ async def reset_daily_users(context: ContextTypes.DEFAULT_TYPE):
     winners.clear()
     available_prizes.clear()
     users_clicked.clear()
+    user_prizes.clear()  # Clear user prizes dictionary
     available_prizes.extend(PRIZES)
     random.shuffle(available_prizes)
     logger.info("Reset winners list, shuffled prizes, and cleared clicked users for new day")
