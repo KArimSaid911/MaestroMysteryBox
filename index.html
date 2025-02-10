@@ -1,58 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Maestro Mystery Box</title>
     <link rel="icon" type="documents/png" href="photo_2024-05-24_11-53-42-removebg.png">
 
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="styles.css?v=5" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.maestro.js"></script> 
+    <link href="style.css" rel="stylesheet">
     <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> 
+    <script src="maestro.js"></script>
 </head>
 
 <body>
     <div class="background-image"></div>
     
 
-
     <div id="particles-js"></div> <!-- Add the particles container -->
 
     <div class="container">
         <h1>Maestro Mystery Box</h1>
         <div class="mystery-box">
-            <div class="box-container">
-                <img src="assets/mystery-box.png" alt="Mystery Box" class="box-image">
-                <div class="box-text">Click to Open!</div>
-            </div>
+            <div class="glow"></div>
         </div>
 
-        <div id="loading" style="display: none;">
-            <div class="loading-container">
-                <div class="loading-text">🎲 Rolling the dice...</div>
-                <div class="loading-text">🎯 Selecting your prize...</div>
-                <div class="loading-text">✨ Preparing your reward...</div>
-                <div class="progress-container">
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-messages">
+                <p class="loading-text">🎲 Rolling the dice...</p>
+                <p class="loading-text">⏳ Checking your luck...</p>
+                <p class="loading-text">🎁 Preparing your prize...</p>
+                <div class="loading-progress">
                     <div class="progress-bar"></div>
                 </div>
             </div>
         </div>
 
-        <div id="result" style="display: none;">
-            <div class="result-container">
-                <h2 id="prizeMessage"></h2>
-                <button id="finalClaimBtn" onclick="window.open('https://t.me/CrypticKimo', '_blank')">
-                    Claim Your Prize! 🎁
-                </button>
-            </div>
+        <div class="result" id="result">
+            <p id="prizeMessage"></p>
+            <button class="btn" id="finalClaimBtn" style="display: none;">🎁 Claim prize</button>
         </div>
     </div>
+
+    <script src="script.js"></script>
 
     <script>
         // Initialize particles.js for animation
@@ -122,8 +114,7 @@
             },
             "interactivity": {
                 "detect_on": "canvas",
-
-"events": {
+                "events": {
                     "onhover": {
                         "enable": true,
                         "mode": "grab"
@@ -167,3 +158,9 @@
 </body>
 
 </html>
+
+
+
+
+
+
